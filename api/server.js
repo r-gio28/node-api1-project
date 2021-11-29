@@ -1,3 +1,3 @@
 // BUILD YOUR SERVER HERE
 
-module.exports = {}; // EXPORT YOUR SERVER instead of {}
+module.exports = server // EXPORT YOUR SERVER instead of {}
