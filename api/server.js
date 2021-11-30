@@ -43,7 +43,7 @@ server.get('/api/users/:id', async (req, res) => {
 
 //POST: /api/users 
 //creates a user using the information sent inside the request body
-server.post('/api/dogs', async (req, res) => {
+server.post('/api/users', async (req, res) => {
     try {
         if(!req.body.name || !req.body.bio) {
             res.status(400).json({
@@ -63,10 +63,46 @@ server.post('/api/dogs', async (req, res) => {
 
 //DELETE by id: /api/users/:id
 //removes the user with the specified id and returns the deleted user
-
+server.delete('/api/users/:id', async (req, res) => {
+    const {id} = req.params
+    User.remove(id)
+    .then(deletedUser => {
+        if(!deletedUser) {
+            res.status(404).json({
+                message: `user by ${id} does not exist`
+            })
+        } else {
+            res.json(deletedUser)
+        }
+    })
+    .catch(err => {
+        res.status(500).json({ 
+            message: 'error deleting user',
+            error: err.message,
+        })
+    })
+})
 //PUT (update) by id: /api/users/:id
 //updates the user with the specified id using data from the request body. returns the modified user
-
+server.put('/api/users/:id', async (req, res) => {
+    const {id} = req.params
+    const {body} = req
+    try {
+        const updatedUser = await User.update(id, body)
+        if (!updatedUser) {
+            res.status(404).json({
+                message: `user by ${id} does not exist`
+            })
+        } else {
+            res.json(updatedUser)
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: 'error updating existing user',
+            error: err.message
+        })
+    }
+})
 // SCHEMA
 // {
 //    id: "a_unique_id", // String, required
